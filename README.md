@@ -51,19 +51,21 @@ AI-FG 目标：提供可复用的 FAQ、检查清单、提示词模板和工作�
 | 🏷 标签 | 36 |
 <!-- AIFG_META_END -->
 
-*自动更新 · 最后更新: 2026-05-24T12:26:40.984528Z*
+*自动更新 · 最后更新: 2026-05-24T12:38:03.799651Z*
 
 ---
 
-## 全网同步看板
+## 内容源说明
 
-<!-- AIFG_SYNC_START -->
-| 平台 | 已发布 | 待发布 | 草稿 | 回链完整率(已发) |
-|---|---:|---:|---:|---:|
-| 📕 知乎 | 0 | 7 | 0 | 0.0% |
-| 📘 公众号 | 0 | 7 | 0 | 0.0% |
-| 📗 掘金 | 0 | 7 | 0 | 0.0% |
-<!-- AIFG_SYNC_END -->
+本仓库是「AI不翻车FAQ / AI-FG」的公开知识库和 canonical 内容源。
+
+- 正式内容：`content/`
+- 公开站点：[GitHub Pages](https://a1gcer.github.io/ai-fg-content-hub/)
+- GEO 文件：`llms.txt`、`llms-full.txt`、`sitemap.xml`
+- 平台分发稿：由私有运营仓库 `ai-fg-private-ops` 生成，不在本仓库维护
+- 外部分发链接：见 `data/publications.json`
+
+---
 
 ---
 

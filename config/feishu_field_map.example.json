@@ -1,0 +1,7 @@
+{
+  "_comment": "这是示例文件，真实配置在私仓 ai-fg-private-ops/config/feishu_field_map.json",
+  "title": "标题字段名",
+  "status": "状态字段名",
+  "published_url": "发布链接字段名",
+  "platform": "平台字段名"
+}

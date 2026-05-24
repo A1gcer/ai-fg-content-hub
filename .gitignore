@@ -13,7 +13,27 @@ site/
 
 # local
 .env
+.env.*
+!.env.example
 *.local.sh
+
+# private configs
+config/feishu_field_map.json
+config/*.local.json
+
+# private ops assets (moved to ai-fg-private-ops)
+distribution/
+drafts/
+analytics/
+private/
+
+# feishu exports
+*.csv
+*.xlsx
+
+# internal scripts
+scripts/*.local.sh
+scripts/*internal*
 
 # npm (residue from earlier TS setup)
 node_modules/
