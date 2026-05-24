@@ -1,7 +1,7 @@
 {
   "meta": {
     "updated": "2026-05-24",
-    "total_published": 6
+    "total_published": 7
   },
   "platforms": [
     "zhihu",
@@ -41,6 +41,17 @@
         "wechat": "https://mp.weixin.qq.com/s/e0pjaDZkSPz2ocT-vPFJ3w",
         "juejin": "https://juejin.cn/post/7643295289436241958",
         "xiaohongshu": "http://xhslink.com/o/4PtTaKMDltW"
+      }
+    },
+    {
+      "id": "2026-05-27-004",
+      "title": "为什么AI回答越流畅越容易让人误判？",
+      "canonical": "https://a1gcer.github.io/ai-fg-content-hub/posts/2026-05-27-004-fluent-scam/",
+      "platforms": {
+        "zhihu": "https://zhuanlan.zhihu.com/p/2042141406723101913",
+        "wechat": "https://mp.weixin.qq.com/s/5PEpEzK_XVW5g_PIv2Z1Jw",
+        "juejin": "https://juejin.cn/post/7643295289436340262",
+        "xiaohongshu": "http://xhslink.com/o/2jSDPmzWSen"
       }
     }
   ]
