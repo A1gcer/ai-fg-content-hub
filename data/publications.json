@@ -1,7 +1,7 @@
 {
   "meta": {
     "updated": "2026-05-24",
-    "total_published": 8
+    "total_published": 9
   },
   "platforms": [
     "zhihu",
@@ -63,6 +63,17 @@
         "wechat": "https://mp.weixin.qq.com/s/iO0PInBiDu4Lmb_YQyk0gg",
         "juejin": "https://juejin.cn/post/7643280009975332873",
         "xiaohongshu": "http://xhslink.com/o/WTEEGXiq8y"
+      }
+    },
+    {
+      "id": "2026-05-30-007",
+      "title": "为什么不建议直接复制AI答案？",
+      "canonical": "https://a1gcer.github.io/ai-fg-content-hub/posts/2026-05-30-007-no-copy/",
+      "platforms": {
+        "wechat": "https://mp.weixin.qq.com/s/Xa70aU_bMqf9frl5gQraTw",
+        "juejin": "https://juejin.cn/post/7642917750826598427",
+        "xiaohongshu": "http://xhslink.com/o/3kkMYOtj2iN",
+        "zhihu": ""
       }
     }
   ]
