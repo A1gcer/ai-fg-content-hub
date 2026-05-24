@@ -34,10 +34,10 @@ def parse(fpath: Path):
     text = fpath.read_text(encoding="utf-8")
     m = re.match(r"^---\s*\n(.*?)\n---\s*\n?", text, re.DOTALL)
     if not m:
-        return None, text
+        return None, text, text
     meta = yaml.safe_load(m.group(1)) or {}
     body = text[m.end():].strip()
-    return meta, body
+    return meta, body, text
 
 def is_date(s):
     return bool(re.match(r"^\d{4}-\d{2}-\d{2}$", str(s)))
@@ -49,7 +49,7 @@ def main():
 
     for f in sorted(CONTENT_DIR.rglob("*.md")):
         rel = f.relative_to(ROOT)
-        meta, body = parse(f)
+        meta, body, raw_text = parse(f)
         if meta is None:
             errors.append(f"[{rel}] missing frontmatter")
             continue
@@ -97,7 +97,7 @@ def main():
 
         # 敏感信息扫描
         for pat in SENSITIVE_PATTERNS:
-            if re.search(pat, text):
+            if re.search(pat, raw_text):
                 errors.append(f"[{rel}] possible sensitive data leak (matched: {pat})")
 
     if errors:
