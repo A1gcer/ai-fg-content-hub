@@ -1,0 +1,51 @@
+name: CI · 内容校验
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "content/**"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      
+      - name: Validate frontmatter
+        run: |
+          python3 -c "
+          import os, re, sys
+          errors = 0
+          required = ['id', 'title', 'date', 'category', 'tags', 'risk', 'status', 'summary']
+          for root, dirs, files in os.walk('content'):
+              for f in files:
+                  if not f.endswith('.md') or 'template' in f.lower():
+                      continue
+                  path = os.path.join(root, f)
+                  text = open(path).read()
+                  m = re.match(r'^---\s*\n(.*?)\n---', text, re.DOTALL)
+                  if not m:
+                      print(f'❌ Missing frontmatter: {path}')
+                      errors += 1
+                      continue
+                  header = m.group(1)
+                  for field in required:
+                      if f'{field}:' not in header:
+                          print(f'❌ Missing field \"{field}\" in: {path}')
+                          errors += 1
+          if errors > 0:
+              print(f'\n⚠️ {errors} errors found')
+              sys.exit(1)
+          print('✅ All frontmatter valid')
+          "
+      
+      - name: Build check
+        run: |
+          python3 scripts/build-index.py
+          echo "✅ Build check passed"

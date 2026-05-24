@@ -1,0 +1,47 @@
+name: Pages · GitHub Pages 自动部署
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "content/**"
+      - "scripts/**"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      
+      - name: Build indexes
+        run: python3 scripts/build-index.py
+      
+      - name: Build pages
+        run: python3 scripts/build-pages.py
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "docs"
+      
+      - name: Deploy to Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

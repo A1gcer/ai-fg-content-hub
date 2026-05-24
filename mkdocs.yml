@@ -1,0 +1,43 @@
+site_name: AI不翻车FAQ
+site_description: 职场人用AI做出能交差的成果
+site_author: A1gcer
+repo_url: https://github.com/A1gcer/ai-fg-content
+edit_uri: edit/main/content/
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.tabs
+    - navigation.indexes
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.emoji
+  - tables
+  - admonition
+  - toc:
+      permalink: true
+
+plugins:
+  - search:
+      lang: zh
+  - tags:
+      tags_file: tags/index.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/A1gcer/ai-fg-content
+
+nav:
+  - 首页: index.md
+  - 分类浏览: categories/
+  - 标签浏览: tags/
+  - 时间线: timeline/
+  - 风险等级: risk/
