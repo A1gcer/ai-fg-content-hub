@@ -14,3 +14,9 @@ site/
 # local
 .env
 *.local.sh
+
+# npm (residue from earlier TS setup)
+node_modules/
+package.json
+package-lock.json
+package.json~
