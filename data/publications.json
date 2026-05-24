@@ -1,7 +1,7 @@
 {
   "meta": {
     "updated": "2026-05-24",
-    "total_published": 5
+    "total_published": 6
   },
   "platforms": [
     "zhihu",
@@ -30,6 +30,17 @@
         "wechat": "https://mp.weixin.qq.com/s/UYHhB2uKSw-Zf047f5CwlQ",
         "juejin": "https://juejin.cn/post/7643084582725713971",
         "xiaohongshu": "http://xhslink.com/o/5suzpDNjw3q"
+      }
+    },
+    {
+      "id": "2026-05-26-003",
+      "title": "AI写的东西为什么总是很空？",
+      "canonical": "https://a1gcer.github.io/ai-fg-content-hub/posts/2026-05-26-003-vague/",
+      "platforms": {
+        "zhihu": "https://zhuanlan.zhihu.com/p/2042137808282842878",
+        "wechat": "https://mp.weixin.qq.com/s/e0pjaDZkSPz2ocT-vPFJ3w",
+        "juejin": "https://juejin.cn/post/7643295289436241958",
+        "xiaohongshu": "http://xhslink.com/o/4PtTaKMDltW"
       }
     }
   ]
