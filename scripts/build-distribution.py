@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""build-distribution.py — 从 content/ 生成三平台分发稿件"""
+"""build-distribution.py — 从 content/ 生成四平台分发稿件"""
 
 import json
 import re
@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CONTENT_DIR = ROOT / "content"
 DIST_DIR = ROOT / "distribution"
 
-PLATFORMS = ["zhihu", "wechat", "juejin"]
+PLATFORMS = ["zhihu", "wechat", "juejin", "xiaohongshu"]
 
 def s(v):
     return "" if v is None else str(v)
@@ -214,6 +214,94 @@ def render_juejin(meta, sections):
     ])
     return body
 
+def render_xiaohongshu(meta, sections):
+    """
+    小红书风格：
+    - 痛点开头（钩子）
+    - 3个核心点（短句）
+    - 可执行动作（3步）
+    - 互动结尾 + 话题标签
+    建议控制在 300~800 字
+    """
+    title = s(meta.get("title"))
+    answer = s(meta.get("answer"))
+    summary = s(meta.get("summary"))
+    risk = s(meta.get("risk", "中"))
+    question = s(meta.get("question")) or title
+
+    why = sections.get("为什么会这样", "")
+    how = sections.get("普通人怎么做", "")
+    checklist = sections.get("防翻车检查清单", "")
+    conclusion = sections.get("结论", "")
+
+    def extract_bullets(text, max_n=3):
+        lines = [x.strip() for x in text.splitlines() if x.strip()]
+        bullets = []
+        for ln in lines:
+            if ln.startswith(("- ", "* ", "1.", "2.", "3.", "4.", "5.", "1、", "2、", "3、", "①", "②", "③")):
+                bullets.append(ln.lstrip("-* ").strip())
+            elif re.match(r"^\d+[\.、]\s*", ln):
+                bullets.append(re.sub(r"^\d+[\.、]\s*", "", ln))
+            if len(bullets) >= max_n:
+                break
+        return bullets
+
+    why_points = extract_bullets(why, 3)
+    if len(why_points) < 3:
+        why_points = [
+            "把 AI 当\"终稿机器\"，而不是\"初稿助手\"",
+            "只看表达流畅，不做事实核验",
+            "没有固定工作流，每次都从头来"
+        ]
+
+    how_steps = extract_bullets(how, 3)
+    if len(how_steps) < 3:
+        how_steps = [
+            "先让 AI 出 70 分初稿",
+            "补真实场景 + 关键事实",
+            "发出前做 5 分钟复核"
+        ]
+
+    risk_icon = {"高": "🔴", "中": "🟡", "低": "🟢"}.get(risk, "⚪")
+
+    quick_check = extract_bullets(checklist, 3)
+    if len(quick_check) < 3:
+        quick_check = ["事实对不对", "有没有敏感信息", "能不能直接发"]
+
+    tail = conclusion if conclusion else "AI 可以提速，但终稿责任一定在人。"
+
+    text = f"""# {title}
+
+你是不是也遇到过：
+AI 写得很顺，但一发出去就容易翻车？😅
+
+先说结论👇
+{answer or summary or "AI 适合做初稿，不适合直接当终稿。"} {risk_icon}
+
+为什么会这样（3点）：
+1) {why_points[0]}
+2) {why_points[1]}
+3) {why_points[2]}
+
+普通人可直接照做（3步）：
+✅ {how_steps[0]}
+✅ {how_steps[1]}
+✅ {how_steps[2]}
+
+发之前快检 30 秒：
+- {quick_check[0]}
+- {quick_check[1]}
+- {quick_check[2]}
+
+{tail}
+
+你现在最容易踩坑的是哪一步？
+评论区告诉我，我按你的场景给你一版可直接用模板。
+
+#AI不翻车FAQ #AI办公 #AI提效 #提示词 #职场效率 #AI避坑 #内容创作
+"""
+    return text.strip() + "\n"
+
 def build_file(platform, meta, content, out_path: Path):
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fm = {
@@ -251,16 +339,19 @@ def main():
         zhihu_text = render_zhihu(meta, sections)
         wechat_text = render_wechat(meta, sections)
         juejin_text = render_juejin(meta, sections)
+        xiaohongshu_text = render_xiaohongshu(meta, sections)
 
         base_name = f"{post_id}-{slug}.md"
 
         out_zhihu = DIST_DIR / "zhihu" / month / base_name
         out_wechat = DIST_DIR / "wechat" / month / base_name
         out_juejin = DIST_DIR / "juejin" / month / base_name
+        out_xhs = DIST_DIR / "xiaohongshu" / month / base_name
 
         build_file("zhihu", meta, zhihu_text, out_zhihu)
         build_file("wechat", meta, wechat_text, out_wechat)
         build_file("juejin", meta, juejin_text, out_juejin)
+        build_file("xiaohongshu", meta, xiaohongshu_text, out_xhs)
 
         generated.append({
             "id": post_id,
@@ -270,7 +361,8 @@ def main():
             "files": {
                 "zhihu": str(out_zhihu.relative_to(ROOT)),
                 "wechat": str(out_wechat.relative_to(ROOT)),
-                "juejin": str(out_juejin.relative_to(ROOT))
+                "juejin": str(out_juejin.relative_to(ROOT)),
+                "xiaohongshu": str(out_xhs.relative_to(ROOT))
             }
         })
         count += 1
@@ -283,7 +375,7 @@ def main():
         encoding="utf-8"
     )
 
-    print(f"build-distribution complete: {count} posts -> 3 platforms")
+    print(f"build-distribution complete: {count} posts -> {len(PLATFORMS)} platforms")
 
 if __name__ == "__main__":
     main()

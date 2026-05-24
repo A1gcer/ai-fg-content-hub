@@ -2,7 +2,7 @@
 source_id: 2026-05-29-006
 source_title: AI到底适合做初稿还是终稿？
 platform: juejin
-generated_at: '2026-05-24T12:08:17.912676Z'
+generated_at: '2026-05-24T12:26:41.075735Z'
 status: drafted
 ---
 

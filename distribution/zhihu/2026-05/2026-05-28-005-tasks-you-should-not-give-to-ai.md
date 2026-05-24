@@ -2,7 +2,7 @@
 source_id: 2026-05-28-005
 source_title: 哪些事情不能直接交给AI？
 platform: zhihu
-generated_at: '2026-05-24T12:08:17.909892Z'
+generated_at: '2026-05-24T12:26:41.071561Z'
 status: drafted
 ---
 

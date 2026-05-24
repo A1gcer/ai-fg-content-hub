@@ -2,7 +2,7 @@
 source_id: 2026-05-30-007
 source_title: 为什么不建议直接复制AI答案？
 platform: zhihu
-generated_at: '2026-05-24T12:08:17.914335Z'
+generated_at: '2026-05-24T12:26:41.079373Z'
 status: drafted
 ---
 

@@ -21,10 +21,12 @@ sync:
   zhihu: pending
   wechat: pending
   juejin: pending
+  xiaohongshu: pending
 urls:
   zhihu: ""
   wechat: ""
   juejin: ""
+  xiaohongshu: ""
 distribution_date: ""
 ---
 

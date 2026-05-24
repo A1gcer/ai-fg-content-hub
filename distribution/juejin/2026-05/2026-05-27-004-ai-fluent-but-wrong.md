@@ -2,7 +2,7 @@
 source_id: 2026-05-27-004
 source_title: 为什么AI回答越流畅越容易让人误判？
 platform: juejin
-generated_at: '2026-05-24T12:08:17.908160Z'
+generated_at: '2026-05-24T12:26:41.069343Z'
 status: drafted
 ---
 

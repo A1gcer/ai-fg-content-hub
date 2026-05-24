@@ -10,7 +10,7 @@ import yaml
 ROOT = Path(__file__).resolve().parent.parent
 CONTENT_DIR = ROOT / "content"
 
-PLATFORMS = ["zhihu", "wechat", "juejin"]
+PLATFORMS = ["zhihu", "wechat", "juejin", "xiaohongshu"]
 ALLOWED_SYNC = {"pending", "drafted", "published", "archived"}
 
 def s(v):

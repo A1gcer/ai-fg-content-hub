@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CONTENT_DIR = ROOT / "content"
 DATA_DIR = ROOT / "data"
 
-PLATFORMS = ["zhihu", "wechat", "juejin"]
+PLATFORMS = ["zhihu", "wechat", "juejin", "xiaohongshu"]
 STATUSES = ["pending", "drafted", "published", "archived"]
 
 def s(v):

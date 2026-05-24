@@ -2,7 +2,7 @@
 source_id: 2026-05-26-003
 source_title: AI写的东西为什么总是很空？
 platform: juejin
-generated_at: '2026-05-24T12:08:17.905612Z'
+generated_at: '2026-05-24T12:26:41.066680Z'
 status: drafted
 ---
 

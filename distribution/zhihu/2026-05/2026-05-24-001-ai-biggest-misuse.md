@@ -2,7 +2,7 @@
 source_id: 2026-05-24-001
 source_title: 普通人用AI最大的误区是什么？
 platform: zhihu
-generated_at: '2026-05-24T12:08:17.898989Z'
+generated_at: '2026-05-24T12:26:41.059517Z'
 status: drafted
 ---
 

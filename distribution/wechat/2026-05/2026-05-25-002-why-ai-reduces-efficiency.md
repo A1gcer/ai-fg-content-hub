@@ -2,7 +2,7 @@
 source_id: 2026-05-25-002
 source_title: 为什么你用了AI效率反而没提高？
 platform: wechat
-generated_at: '2026-05-24T12:08:17.902990Z'
+generated_at: '2026-05-24T12:26:41.063520Z'
 status: drafted
 ---
 
