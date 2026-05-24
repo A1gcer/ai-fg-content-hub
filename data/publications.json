@@ -1,7 +1,7 @@
 {
   "meta": {
     "updated": "2026-05-24",
-    "total_published": 7
+    "total_published": 8
   },
   "platforms": [
     "zhihu",
@@ -52,6 +52,17 @@
         "wechat": "https://mp.weixin.qq.com/s/5PEpEzK_XVW5g_PIv2Z1Jw",
         "juejin": "https://juejin.cn/post/7643295289436340262",
         "xiaohongshu": "http://xhslink.com/o/2jSDPmzWSen"
+      }
+    },
+    {
+      "id": "2026-05-28-005",
+      "title": "哪些事情不能直接交给AI？",
+      "canonical": "https://a1gcer.github.io/ai-fg-content-hub/posts/2026-05-28-005-dont-ai/",
+      "platforms": {
+        "zhihu": "https://zhuanlan.zhihu.com/p/2042144528052867856",
+        "wechat": "https://mp.weixin.qq.com/s/iO0PInBiDu4Lmb_YQyk0gg",
+        "juejin": "https://juejin.cn/post/7643280009975332873",
+        "xiaohongshu": "http://xhslink.com/o/WTEEGXiq8y"
       }
     }
   ]
