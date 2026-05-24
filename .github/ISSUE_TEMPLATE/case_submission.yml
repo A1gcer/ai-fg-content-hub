@@ -1,0 +1,12 @@
+name: Case submission
+description: 提交 AI 翻车案例
+title: "[CASE] "
+labels: ["case"]
+body:
+  - type: textarea
+    id: case
+    attributes:
+      label: 案例描述
+      placeholder: 不要包含敏感信息
+    validations:
+      required: true

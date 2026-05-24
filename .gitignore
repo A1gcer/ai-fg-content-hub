@@ -6,8 +6,11 @@
 .DS_Store
 Thumbs.db
 
-# Local scripts
-scripts/*.local.sh
-
-# Generated
+# generated
+data/
 docs/
+site/
+
+# local
+.env
+*.local.sh

@@ -1,0 +1,12 @@
+name: Bug report
+description: 报告脚本/页面/链接问题
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: desc
+    attributes:
+      label: 问题描述
+      placeholder: 发生了什么？
+    validations:
+      required: true

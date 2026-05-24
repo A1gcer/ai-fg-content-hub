@@ -1,180 +1,175 @@
 #!/usr/bin/env python3
-"""Build Markdown pages from content/ into docs/ for GitHub Pages"""
+"""build-pages.py — 从 data/index.json 生成 docs/ 页面"""
 
 import json
-import os
-import re
 from datetime import datetime
 from pathlib import Path
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
-DOCS_DIR = Path(__file__).resolve().parent.parent / "docs"
-CONTENT_PARENT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent
+DATA_DIR = ROOT / "data"
+DOCS_DIR = ROOT / "docs"
 
-def load_data(name):
-    fpath = DATA_DIR / name
-    if not fpath.exists():
-        print(f"⚠️ data/{name} not found. Run build-index.py first.")
+def load_json(name):
+    p = DATA_DIR / name
+    if not p.exists():
         return None
-    return json.loads(fpath.read_text(encoding="utf-8"))
+    return json.loads(p.read_text(encoding="utf-8"))
 
-def write_doc(path, content):
+def write(path: Path, text: str):
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(content, encoding="utf-8")
+    path.write_text(text, encoding="utf-8")
 
-def build_homepage(posts, meta):
-    """Build docs/index.md"""
+def sort_by_date_desc(items):
+    return sorted(items, key=lambda x: x.get("date", ""), reverse=True)
+
+def post_link(p, depth=0):
+    prefix = "../" * depth
+    return f"{prefix}{p['url_path']}"
+
+def build_home(posts, meta):
+    risk_icon = {"高": "🔴", "中": "🟡", "低": "🟢"}
     lines = [
-        "---",
-        "layout: home",
-        "title: AI不翻车FAQ",
-        "description: 职场人用AI做出能交差的成果",
-        "---",
-        "",
-        "# AI不翻车FAQ 📖",
-        "",
-        "> 我不教你玩AI，我教你用AI做出能交差的东西。",
-        "",
-        "## 📊 数据看板",
-        "",
-        f"- **总文章**: {meta['total']}",
-        f"- **已发布**: {meta['published']}",
-        f"- **草稿**: {meta['draft']}",
-        f"- **分类**: {meta['categories']} 个",
-        "",
-        "## 📝 最新内容",
-        "",
-        "| Date | Title | Category | Risk | Status |",
-        "|------|-------|----------|------|--------|",
+        "# AI不翻车FAQ / AI-FG", "",
+        "> 面向职场人的 AI 交付安全与质量控制知识库。", "",
+        "## 数据看板", "",
+        f"- 总文章：{meta['total']}",
+        f"- 已发布：{meta['published']}",
+        f"- 草稿：{meta['draft']}",
+        f"- 归档：{meta['archived']}",
+        f"- 分类：{meta['categories']}",
+        f"- 标签：{meta['tags']}", "",
+        "## 最新内容", "",
+        "| Date | Title | Category | Risk |",
+        "|---|---|---|---|",
     ]
-    for p in posts[:10]:
-        risk_icon = {"高": "🔴", "中": "🟡", "低": "🟢"}.get(p["risk"], "⚪")
-        status_icon = {"published": "✅", "draft": "📝"}.get(p["status"], "📄")
-        lines.append(f"| {p['date']} | [{p['title']}](../{p['path']}) | {p['category']} | {risk_icon} {p['risk']} | {status_icon} {p['status']} |")
-    
+    for p in sort_by_date_desc(posts)[:10]:
+        icon = risk_icon.get(p["risk"], "⚪")
+        lines.append(f"| {p['date']} | [{p['title']}]({post_link(p,0)}) | {p['category']} | {icon} {p['risk']} |")
     lines += [
-        "",
-        "---",
-        "",
-        "### 🔍 快速入口",
-        "",
-        "- [📂 按分类浏览](categories/)",
-        "- [🏷️ 按标签浏览](tags/)",
-        "- [📅 时间线](timeline/)",
-        "- [⚠️ 按风险等级](risk/)",
-        "",
-        "---",
-        f"*更新于: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}*",
+        "", "## 核心页面", "",
+        "- [分类](categories/)",
+        "- [标签](tags/)",
+        "- [时间线](timeline/)",
+        "- [风险](risk/)", "",
+        f"*更新于 {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}*",
     ]
-    write_doc(DOCS_DIR / "index.md", "\n".join(lines))
-    print("✅ docs/index.md")
+    write(DOCS_DIR / "index.md", "\n".join(lines))
 
 def build_categories(posts):
-    """Build docs/categories/index.md"""
     cats = {}
     for p in posts:
-        c = p["category"]
-        if c not in cats:
-            cats[c] = []
-        cats[c].append(p)
-    
-    lines = [
-        "---",
-        "layout: page",
-        "title: 分类浏览",
-        "---",
-        "",
-        "# 📂 分类浏览",
-        "",
-    ]
-    for cat in sorted(cats.keys()):
-        items = cats[cat]
-        lines += [f"## {cat} ({len(items)}篇)", ""]
-        for p in items:
-            lines.append(f"- [{p['title']}](../../{p['path']}) — {p['date']}")
+        cats.setdefault(p["category"], []).append(p)
+    lines = ["# 分类浏览", ""]
+    for c in sorted(cats.keys()):
+        lines.append(f"## {c}（{len(cats[c])}）\n")
+        for p in sort_by_date_desc(cats[c]):
+            lines.append(f"- [{p['title']}]({post_link(p,1)}) · {p['date']}")
         lines.append("")
-    
-    write_doc(DOCS_DIR / "categories" / "index.md", "\n".join(lines))
-    print("✅ docs/categories/index.md")
+    write(DOCS_DIR / "categories" / "index.md", "\n".join(lines))
 
-def build_tags_page(tags):
-    lines = [
-        "---",
-        "layout: page",
-        "title: 标签浏览",
-        "---",
-        "",
-        "# 🏷️ 标签浏览",
-        "",
-    ]
-    for t in tags:
-        lines.append(f"### {t['tag']} ({t['count']}篇)")
+def build_tags(posts):
+    tags = {}
+    for p in posts:
+        for t in p["tags"]:
+            tags.setdefault(t, []).append(p)
+    lines = ["# 标签浏览", ""]
+    for t in sorted(tags.keys()):
+        lines.append(f"## {t}（{len(tags[t])}）\n")
+        for p in sort_by_date_desc(tags[t]):
+            lines.append(f"- [{p['title']}]({post_link(p,1)})")
         lines.append("")
-        for pid in t["posts"]:
-            lines.append(f"- `{pid}`")
-        lines.append("")
-    
-    write_doc(DOCS_DIR / "tags" / "index.md", "\n".join(lines))
-    print("✅ docs/tags/index.md")
+    write(DOCS_DIR / "tags" / "index.md", "\n".join(lines))
 
-def build_timeline_page(timeline):
-    lines = [
-        "---",
-        "layout: page",
-        "title: 时间线",
-        "---",
-        "",
-        "# 📅 时间线",
-        "",
-    ]
-    for t in timeline:
-        lines.append(f"### {t['month']} ({t['count']}篇)")
+def build_timeline(posts):
+    m = {}
+    for p in posts:
+        k = p["date"][:7] if p["date"] else "unknown"
+        m.setdefault(k, []).append(p)
+    lines = ["# 时间线", ""]
+    for month in sorted(m.keys(), reverse=True):
+        lines.append(f"## {month}（{len(m[month])}）\n")
+        for p in sort_by_date_desc(m[month]):
+            lines.append(f"- [{p['title']}]({post_link(p,1)})")
         lines.append("")
-        for pid in t["posts"]:
-            lines.append(f"- `{pid}`")
-        lines.append("")
-    
-    write_doc(DOCS_DIR / "timeline" / "index.md", "\n".join(lines))
-    print("✅ docs/timeline/index.md")
+    write(DOCS_DIR / "timeline" / "index.md", "\n".join(lines))
 
-def build_risk_page(risks):
+def build_risk(posts):
+    r = {}
+    for p in posts:
+        r.setdefault(p["risk"], []).append(p)
+    icon = {"高": "🔴", "中": "🟡", "低": "🟢"}
+    lines = ["# 按风险浏览", ""]
+    for risk in ["高", "中", "低"]:
+        arr = r.get(risk, [])
+        if not arr:
+            continue
+        lines.append(f"## {icon[risk]} {risk}（{len(arr)}）\n")
+        for p in sort_by_date_desc(arr):
+            lines.append(f"- [{p['title']}]({post_link(p,1)})")
+        lines.append("")
+    write(DOCS_DIR / "risk" / "index.md", "\n".join(lines))
+
+def render_post_page(p):
+    import json as _json
+    jsonld = ""
+    if p.get("question") and p.get("answer"):
+        jsonld = f"""
+<script type="application/ld+json">
+{{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[{{
+    "@type":"Question",
+    "name":{_json.dumps(p["question"], ensure_ascii=False)},
+    "acceptedAnswer":{{
+      "@type":"Answer",
+      "text":{_json.dumps(p["answer"], ensure_ascii=False)}
+    }}
+  }}]
+}}
+</script>""".strip()
     lines = [
-        "---",
-        "layout: page",
-        "title: 风险等级",
-        "---",
-        "",
-        "# ⚠️ 按风险等级浏览",
-        "",
+        f"# {p['title']}", "",
+        f"> 分类：{p['category']} ｜ 风险：{p['risk']} ｜ 日期：{p['date']}", "",
+        f"**一句话答案：** {p.get('answer', '')}", "",
+        p["body"], "",
+        "## 复核提醒", "",
+        "- AI 可做初稿，终稿责任在人",
+        "- 关键事实必须人工核查",
+        "- 涉及敏感信息请勿上传公共 AI 工具", "",
     ]
-    risk_order = {"高": "🔴", "中": "🟡", "低": "🟢"}
-    for r in risks:
-        icon = risk_order.get(r["risk"], "⚪")
-        lines.append(f"### {icon} {r['risk']} ({r['count']}篇)")
-        lines.append("")
-        for pid in r["posts"]:
-            lines.append(f"- `{pid}`")
-        lines.append("")
-    
-    write_doc(DOCS_DIR / "risk" / "index.md", "\n".join(lines))
-    print("✅ docs/risk/index.md")
+    if jsonld:
+        lines.append(jsonld)
+    return "\n".join(lines)
+
+def build_content_pages(items):
+    for p in items:
+        if p["status"] != "published":
+            continue
+        out = DOCS_DIR / p["url_path"] / "index.md"
+        write(out, render_post_page(p))
+
+def build_awesome(posts):
+    lines = ["# Awesome AI不翻车", "", "## AI误区", ""]
+    for p in posts:
+        if "误区" in p["title"] or "为什么" in p["title"]:
+            lines.append(f"- [{p['title']}](./{post_link(p,0)})")
+    lines += ["", "## 检查清单", "",
+              "- [AI 生成内容交付前检查清单](checklists/ai-output-quality-checklist/)",
+              "- [AI 敏感信息红线清单](checklists/ai-privacy-risk-checklist/)"]
+    write(DOCS_DIR / "awesome-ai-fg.md", "\n".join(lines))
 
 if __name__ == "__main__":
-    index = load_data("index.json")
+    index = load_json("index.json")
     if not index:
-        import sys; sys.exit(1)
-    
-    posts = index["posts"]
-    meta = index["meta"]
-    
-    tags = load_data("tags.json")
-    timeline = load_data("timeline.json")
-    risks = load_data("by-risk.json")
-    
-    build_homepage(posts, meta)
-    build_categories(posts)
-    if tags: build_tags_page(tags)
-    if timeline: build_timeline_page(timeline)
-    if risks: build_risk_page(risks)
-    
-    print("\n✅ Pages build complete — output in docs/")
+        raise SystemExit("data/index.json not found")
+    items = index["posts"]
+    published = [x for x in items if x["status"] == "published"]
+    build_home(published, index["meta"])
+    build_categories(published)
+    build_tags(published)
+    build_timeline(published)
+    build_risk(published)
+    build_content_pages(items)
+    build_awesome(published)
+    print("build-pages complete")

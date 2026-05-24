@@ -1,0 +1,15 @@
+name: Content request
+description: 提交 FAQ 选题建议
+title: "[CONTENT] "
+labels: ["content"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: 选题标题
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: 为什么值得写？

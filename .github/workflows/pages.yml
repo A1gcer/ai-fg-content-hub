@@ -1,12 +1,7 @@
-name: Pages · GitHub Pages 自动部署
-
+name: Deploy Pages
 on:
   push:
     branches: [main]
-    paths:
-      - "content/**"
-      - "scripts/**"
-  workflow_dispatch:
 
 jobs:
   deploy:
@@ -15,33 +10,23 @@ jobs:
       contents: read
       pages: write
       id-token: write
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      
-      - name: Build indexes
-        run: python3 scripts/build-index.py
-      
-      - name: Build pages
-        run: python3 scripts/build-pages.py
-      
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+
+      - name: Install deps
+        run: pip install pyyaml mkdocs-material
+
+      - name: Build project
+        run: bash scripts/build.sh
+
+      - name: Build MkDocs
+        run: mkdocs build --strict
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
         with:
-          path: "docs"
-      
-      - name: Deploy to Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          path: site
+      - uses: actions/deploy-pages@v4

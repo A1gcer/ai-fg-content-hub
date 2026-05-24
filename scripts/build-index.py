@@ -1,158 +1,138 @@
 #!/usr/bin/env python3
-"""Build content indexes: data/index.json, data/tags.json, data/timeline.json"""
+"""build-index.py — 扫描 content/，生成 data/index.json / tags.json / timeline.json / by-risk.json"""
 
 import json
-import os
 import re
-import sys
 from datetime import datetime
 from pathlib import Path
 
-CONTENT_DIR = Path(__file__).resolve().parent.parent / "content"
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
-DOCS_DIR = Path(__file__).resolve().parent.parent / "docs"
+import yaml
 
-def parse_frontmatter(text):
-    """Parse YAML-like frontmatter between --- markers"""
-    m = re.match(r'^---\s*\n(.*?)\n---\s*\n', text, re.DOTALL)
+ROOT = Path(__file__).resolve().parent.parent
+CONTENT_DIR = ROOT / "content"
+DATA_DIR = ROOT / "data"
+
+def parse_file(fpath: Path):
+    text = fpath.read_text(encoding="utf-8")
+    m = re.match(r"^---\s*\n(.*?)\n---\s*\n?", text, re.DOTALL)
     if not m:
-        return {}, text
-    header = m.group(1)
-    body = text[m.end():]
-    meta = {}
-    for line in header.strip().split('\n'):
-        if ':' in line:
-            key, _, val = line.partition(':')
-            key = key.strip()
-            val = val.strip()
-            # Parse array values
-            if val.startswith('[') and val.endswith(']'):
-                val = [v.strip().strip('"\'') for v in val[1:-1].split(',')]
-            else:
-                val = val.strip('"\'')
-            meta[key] = val
-    return meta, body.strip()
+        return {}, text.strip()
+    meta = yaml.safe_load(m.group(1)) or {}
+    body = text[m.end():].strip()
+    return meta, body
 
-def scan_content():
+def ensure_list(v):
+    if v is None:
+        return []
+    if isinstance(v, list):
+        return v
+    return [str(v)]
+
+def infer_type(rel: Path):
+    parts = rel.parts
+    if len(parts) >= 4 and parts[0] == "content" and re.match(r"^\d{4}$", parts[1]) and re.match(r"^\d{2}$", parts[2]):
+        return "post", "posts"
+    if len(parts) >= 2 and parts[0] == "content":
+        return "asset", parts[1]
+    return "unknown", "misc"
+
+def make_url_path(meta: dict, rel: Path):
+    ctype, section = infer_type(rel)
+    slug = meta.get("slug", rel.stem)
+    date = str(meta.get("date", ""))
+    if ctype == "post":
+        yyyy = date[:4] if len(date) >= 4 else "unknown"
+        mm = date[5:7] if len(date) >= 7 else "00"
+        return f"posts/{yyyy}/{mm}/{slug}/"
+    return f"{section}/{slug}/"
+
+def scan():
     posts = []
-    for fpath in sorted(CONTENT_DIR.rglob("*.md")):
-        if "template" in fpath.name.lower():
+    for f in sorted(CONTENT_DIR.rglob("*.md")):
+        rel = f.relative_to(ROOT)
+        meta, body = parse_file(f)
+        if not meta:
             continue
-        text = fpath.read_text(encoding="utf-8")
-        meta, body = parse_frontmatter(text)
-        if not meta.get("id"):
-            continue
-        rel_path = fpath.relative_to(CONTENT_DIR.parent)
-        posts.append({
-            "id": meta.get("id"),
-            "title": meta.get("title", ""),
-            "date": meta.get("date", ""),
-            "category": meta.get("category", ""),
-            "tags": meta.get("tags", []),
-            "risk": meta.get("risk", ""),
-            "channel": meta.get("channel", ""),
-            "status": meta.get("status", "draft"),
-            "summary": meta.get("summary", ""),
-            "feishu_id": meta.get("feishu_id", ""),
-            "path": str(rel_path),
-            "word_count": len(body),
-        })
+        tags = ensure_list(meta.get("tags", []))
+        ctype, section = infer_type(rel)
+        item = {
+            "id": str(meta.get("id", "")),
+            "title": str(meta.get("title", "")),
+            "slug": str(meta.get("slug", f.stem)),
+            "date": str(meta.get("date", "")),
+            "updated": str(meta.get("updated", meta.get("date", ""))),
+            "category": str(meta.get("category", "")),
+            "tags": tags,
+            "risk": str(meta.get("risk", "中")),
+            "channel": str(meta.get("channel", "")),
+            "status": str(meta.get("status", "draft")),
+            "summary": str(meta.get("summary", "")),
+            "question": str(meta.get("question", "")),
+            "answer": str(meta.get("answer", "")),
+            "audience": str(meta.get("audience", "")),
+            "scenario": str(meta.get("scenario", "")),
+            "review_required": bool(meta.get("review_required", True)),
+            "canonical_url": str(meta.get("canonical_url", "")),
+            "license": str(meta.get("license", "CC BY-NC-SA 4.0")),
+            "path": str(rel),
+            "content_type": ctype,
+            "section": section,
+            "url_path": make_url_path(meta, rel),
+            "word_count": len(re.findall(r"\S+", body)),
+            "body": body,
+        }
+        posts.append(item)
     return posts
 
-def build_index(posts):
-    """Build data/index.json"""
+def build_index(items):
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    
-    index = {
-        "meta": {
-            "total": len(posts),
-            "published": len([p for p in posts if p["status"] == "published"]),
-            "draft": len([p for p in posts if p["status"] == "draft"]),
-            "categories": len(set(p["category"] for p in posts)),
-            "tags": len(set(t for p in posts for t in (p["tags"] if isinstance(p["tags"], list) else [p["tags"]]))),
-            "updated": datetime.utcnow().isoformat() + "Z",
-        },
-        "posts": posts,
+    meta = {
+        "total": len(items),
+        "published": len([x for x in items if x["status"] == "published"]),
+        "draft": len([x for x in items if x["status"] == "draft"]),
+        "archived": len([x for x in items if x["status"] == "archived"]),
+        "categories": len(set([x["category"] for x in items if x["category"]])),
+        "tags": len(set([t for x in items for t in x["tags"]])),
+        "updated": datetime.utcnow().isoformat() + "Z",
     }
-    (DATA_DIR / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=2))
-    print(f"✅ data/index.json — {len(posts)} posts")
+    out = {"meta": meta, "posts": items}
+    (DATA_DIR / "index.json").write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
 
-def build_tags(posts):
-    """Build data/tags.json"""
+def build_tags(items):
     tags = {}
-    for p in posts:
-        tag_list = p["tags"] if isinstance(p["tags"], list) else [p["tags"]]
-        for tag in tag_list:
-            tag = tag.strip()
-            if tag not in tags:
-                tags[tag] = {"tag": tag, "count": 0, "posts": []}
-            tags[tag]["count"] += 1
-            tags[tag]["posts"].append(p["id"])
-    
-    tag_list = sorted(tags.values(), key=lambda x: -x["count"])
-    (DATA_DIR / "tags.json").write_text(json.dumps(tag_list, ensure_ascii=False, indent=2))
-    print(f"✅ data/tags.json — {len(tag_list)} tags")
+    for p in items:
+        for t in p["tags"]:
+            tags.setdefault(t, {"tag": t, "count": 0, "posts": []})
+            tags[t]["count"] += 1
+            tags[t]["posts"].append(p["id"])
+    arr = sorted(tags.values(), key=lambda x: (-x["count"], x["tag"]))
+    (DATA_DIR / "tags.json").write_text(json.dumps(arr, ensure_ascii=False, indent=2), encoding="utf-8")
 
-def build_timeline(posts):
-    """Build data/timeline.json"""
+def build_timeline(items):
     timeline = {}
-    for p in posts:
-        date = p.get("date", "")
-        month = date[:7] if date else "unknown"
-        if month not in timeline:
-            timeline[month] = {"month": month, "count": 0, "posts": []}
-        timeline[month]["count"] += 1
-        timeline[month]["posts"].append(p["id"])
-    
-    result = sorted(timeline.values(), key=lambda x: x["month"], reverse=True)
-    (DATA_DIR / "timeline.json").write_text(json.dumps(result, ensure_ascii=False, indent=2))
-    print(f"✅ data/timeline.json — {len(result)} months")
+    for p in items:
+        d = p.get("date", "")
+        m = d[:7] if d else "unknown"
+        timeline.setdefault(m, {"month": m, "count": 0, "posts": []})
+        timeline[m]["count"] += 1
+        timeline[m]["posts"].append(p["id"])
+    arr = sorted(timeline.values(), key=lambda x: x["month"], reverse=True)
+    (DATA_DIR / "timeline.json").write_text(json.dumps(arr, ensure_ascii=False, indent=2), encoding="utf-8")
 
-def build_risk_index(posts):
-    """Build data/by-risk.json"""
-    levels = {}
-    for p in posts:
-        level = p.get("risk", "未知")
-        if level not in levels:
-            levels[level] = {"risk": level, "count": 0, "posts": []}
-        levels[level]["count"] += 1
-        levels[level]["posts"].append(p["id"])
-    
-    result = sorted(levels.values(), key=lambda x: -x["count"])
-    (DATA_DIR / "by-risk.json").write_text(json.dumps(result, ensure_ascii=False, indent=2))
-    print(f"✅ data/by-risk.json — {len(result)} risk levels")
-
-def generate_readme_table(posts):
-    """Generate the recent posts table for README"""
-    headers = ["Date", "Title", "Category", "Tags", "Risk", "Status"]
-    rows = []
-    for p in posts[:10]:  # Last 10
-        tags = ", ".join(p["tags"][:3]) if isinstance(p["tags"], list) else str(p["tags"])
-        risk_icon = {"高": "🔴", "中": "🟡", "低": "🟢"}.get(p["risk"], "⚪")
-        status_icon = {"published": "✅", "draft": "📝", "复盘": "📊"}.get(p["status"], "📄")
-        rows.append(f"| {p['date']} | [{p['title']}]({p['path']}) | {p['category']} | {tags} | {risk_icon} {p['risk']} | {status_icon} {p['status']} |")
-    
-    return "\n".join(rows)
+def build_risk(items):
+    risks = {}
+    for p in items:
+        r = p.get("risk", "中")
+        risks.setdefault(r, {"risk": r, "count": 0, "posts": []})
+        risks[r]["count"] += 1
+        risks[r]["posts"].append(p["id"])
+    arr = sorted(risks.values(), key=lambda x: -x["count"])
+    (DATA_DIR / "by-risk.json").write_text(json.dumps(arr, ensure_ascii=False, indent=2), encoding="utf-8")
 
 if __name__ == "__main__":
-    posts = scan_content()
-    if not posts:
-        print("⚠️ No posts found in content/")
-        sys.exit(0)
-    
-    build_index(posts)
-    build_tags(posts)
-    build_timeline(posts)
-    build_risk_index(posts)
-    
-    # Generate README table for use in rebuild-readme.sh
-    table = generate_readme_table(posts)
-    meta = {
-        "total": len(posts),
-        "published": len([p for p in posts if p["status"] == "published"]),
-        "draft": len([p for p in posts if p["status"] == "draft"]),
-        "categories": len(set(p["category"] for p in posts)),
-    }
-    (DATA_DIR / "readme-meta.json").write_text(json.dumps({"table": table, **meta}))
-    print(f"\n📊 Stats: {meta['total']} total · {meta['published']} published · {meta['draft']} drafts · {meta['categories']} categories")
-    print("✅ Build complete")
+    items = scan()
+    build_index(items)
+    build_tags(items)
+    build_timeline(items)
+    build_risk(items)
+    print(f"build-index complete: {len(items)} items")
