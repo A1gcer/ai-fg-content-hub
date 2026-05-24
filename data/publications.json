@@ -1,7 +1,7 @@
 {
   "meta": {
     "updated": "2026-05-24",
-    "total_published": 4
+    "total_published": 5
   },
   "platforms": [
     "zhihu",
@@ -19,6 +19,17 @@
         "wechat": "https://mp.weixin.qq.com/s/VRwORegffUUwrYu6T8Scig",
         "juejin": "https://juejin.cn/post/7643084582725550131",
         "xiaohongshu": "http://xhslink.com/o/9Q4vJfTN70y"
+      }
+    },
+    {
+      "id": "2026-05-25-002",
+      "title": "为什么你用了AI效率反而没提高？",
+      "canonical": "https://a1gcer.github.io/ai-fg-content-hub/posts/2026-05-25-002-efficiency/",
+      "platforms": {
+        "zhihu": "https://zhuanlan.zhihu.com/p/2042013342982722697",
+        "wechat": "https://mp.weixin.qq.com/s/UYHhB2uKSw-Zf047f5CwlQ",
+        "juejin": "https://juejin.cn/post/7643084582725713971",
+        "xiaohongshu": "http://xhslink.com/o/5suzpDNjw3q"
       }
     }
   ]
