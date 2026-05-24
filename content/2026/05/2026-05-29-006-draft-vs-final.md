@@ -17,6 +17,15 @@ scenario: "方案、汇报、邮件、脚本写作"
 review_required: true
 canonical_url: "https://a1gcer.github.io/ai-fg-content-hub/posts/2026/05/ai-draft-vs-final/"
 license: "CC BY-NC-SA 4.0"
+sync:
+  zhihu: pending
+  wechat: pending
+  juejin: pending
+urls:
+  zhihu: ""
+  wechat: ""
+  juejin: ""
+distribution_date: ""
 ---
 
 # AI到底适合做初稿还是终稿？
