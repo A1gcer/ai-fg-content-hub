@@ -21,10 +21,18 @@
   line-height: 1.4;
 }
 
-/* Skill 卡片内的 details/summary */
+/* Skill 卡片内的 details/summary — 覆盖 mkdocs Material 默认样式 */
 .md-typeset .prompt-card details {
   margin: 6px 0;
   font-size: 0.85em;
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+.md-typeset .prompt-card details::before {
+  display: none !important;
 }
 
 .md-typeset .prompt-card details summary {
@@ -32,6 +40,15 @@
   color: var(--md-typeset-a-color);
   font-weight: 500;
   padding: 4px 0;
+  display: block !important;
+  border: none !important;
+  background: transparent !important;
+  margin: 0 !important;
+}
+
+.md-typeset .prompt-card details summary::before,
+.md-typeset .prompt-card details summary::after {
+  display: none !important;
 }
 
 .md-typeset .prompt-card details summary:hover {
@@ -46,7 +63,6 @@
   background: #1e1e2e;
   color: #cdd6f4;
   white-space: pre-wrap;
-}
 }
 
 /* 每个提示卡片 */

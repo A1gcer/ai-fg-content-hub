@@ -298,13 +298,13 @@ def build_prompts(posts):
         f"""
     <details>
       <summary>\U0001f6ae 约束</summary>
-      <pre>{escaped_constraints}</pre>
+      <pre><code>{escaped_constraints}</code></pre>
     </details>""" if escaped_constraints else ""
     ) + (
         f"""
     <details>
       <summary>✅ 输出检查</summary>
-      <pre>{escaped_checks}</pre>
+      <pre><code>{escaped_checks}</code></pre>
     </details>""" if escaped_checks else ""
     ) + f"""
   </div>
