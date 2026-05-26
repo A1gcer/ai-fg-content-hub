@@ -291,22 +291,16 @@ def build_prompts(posts):
   </div>
   <div class="prompt-card-body">
     <div class="skill-scenario">\U0001f3af 场景：{esc(skill_scenario)}</div>
-    <details>
-      <summary>\U0001f4dd 指令（点击展开）</summary>
-      <pre><code>{escaped_prompt}</code></pre>
-    </details>""" + (
-        f"""
-    <details>
-      <summary>\U0001f6ae 约束</summary>
-      <pre><code>{escaped_constraints}</code></pre>
-    </details>""" if escaped_constraints else ""
-    ) + (
-        f"""
-    <details>
-      <summary>✅ 输出检查</summary>
-      <pre><code>{escaped_checks}</code></pre>
-    </details>""" if escaped_checks else ""
-    ) + f"""
+    <details open="open">
+      <summary>\U0001f4cb 可复制 Skill（一键复制）</summary>
+      <pre><code>{escaped_prompt}
+
+--- 约束 ---
+{escaped_constraints if escaped_constraints else '无'}
+
+--- 输出检查 ---
+{escaped_checks if escaped_checks else '无'}</code></pre>
+    </details>
   </div>
   <div class="prompt-card-footer">
     <a href="{post_link(p,1)}">\U0001f449 查看完整解答</a>
