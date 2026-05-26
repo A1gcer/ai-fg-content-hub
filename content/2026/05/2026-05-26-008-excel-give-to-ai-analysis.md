@@ -1,9 +1,9 @@
 ---
-id: 2026-05-31-008
+id: 2026-05-26-008
 title: 把Excel直接丢给AI分析，我踩过的坑
 slug: excel-give-to-ai-analysis
-date: 2026-05-31
-updated: 2026-05-31
+date: 2026-05-26
+updated: 2026-05-26
 category: AI办公自动化
 tags:
 - Excel
