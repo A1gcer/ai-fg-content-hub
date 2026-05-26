@@ -2,8 +2,8 @@
 id: 2026-05-31-104
 title: "AI-FG Prompt 模板库"
 slug: "prompt-templates"
-date: 2026-05-31
-updated: 2026-05-31
+date: 2026-05-26
+updated: 2026-05-26
 category: AI工作流
 tags: [Prompt, 模板, 复用]
 risk: 中

@@ -2,8 +2,8 @@
 id: 2026-05-31-201
 title: "术语：AI幻觉"
 slug: "glossary-ai-hallucination"
-date: 2026-05-31
-updated: 2026-05-31
+date: 2026-05-26
+updated: 2026-05-26
 category: AI基础避坑
 tags: [术语, AI幻觉]
 risk: 中

@@ -2,8 +2,8 @@
 id: 2026-05-31-102
 title: "AI 敏感信息红线清单"
 slug: "ai-privacy-risk-checklist"
-date: 2026-05-31
-updated: 2026-05-31
+date: 2026-05-26
+updated: 2026-05-26
 category: 安全与不背锅
 tags: [隐私, 安全, 红线]
 risk: 高

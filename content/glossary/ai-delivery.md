@@ -2,8 +2,8 @@
 id: 2026-05-31-202
 title: "术语：AI交付"
 slug: "glossary-ai-delivery"
-date: 2026-05-31
-updated: 2026-05-31
+date: 2026-05-26
+updated: 2026-05-26
 category: 职场交付
 tags: [术语, AI交付]
 risk: 中

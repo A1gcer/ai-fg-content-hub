@@ -2,8 +2,8 @@
 id: 2026-05-31-203
 title: "术语：人工复核"
 slug: "glossary-human-review"
-date: 2026-05-31
-updated: 2026-05-31
+date: 2026-05-26
+updated: 2026-05-26
 category: AI品控检查
 tags: [术语, 人工复核]
 risk: 中

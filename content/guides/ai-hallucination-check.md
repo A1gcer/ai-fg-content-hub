@@ -2,8 +2,8 @@
 id: 2026-05-31-103
 title: "AI 幻觉识别指南"
 slug: "ai-hallucination-check"
-date: 2026-05-31
-updated: 2026-05-31
+date: 2026-05-26
+updated: 2026-05-26
 category: AI品控检查
 tags: [AI幻觉, 事实核验, 风险控制]
 risk: 高

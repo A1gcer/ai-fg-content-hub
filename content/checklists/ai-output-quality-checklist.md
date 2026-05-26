@@ -2,8 +2,8 @@
 id: 2026-05-31-101
 title: "AI 生成内容交付前检查清单"
 slug: "ai-output-quality-checklist"
-date: 2026-05-31
-updated: 2026-05-31
+date: 2026-05-26
+updated: 2026-05-26
 category: AI品控检查
 tags: [检查清单, 交付质量, 人工复核]
 risk: 中

@@ -2,8 +2,8 @@
 id: 2026-05-31-105
 title: "AI-FG 方法论"
 slug: "ai-fg-methodology"
-date: 2026-05-31
-updated: 2026-05-31
+date: 2026-05-26
+updated: 2026-05-26
 category: AI工作流
 tags: [方法论, 交付, 品控]
 risk: 中

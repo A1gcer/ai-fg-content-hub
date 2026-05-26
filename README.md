@@ -51,7 +51,7 @@ AI-FG 目标：提供可复用的 FAQ、检查清单、提示词模板和工作�
 | 🏷 标签 | 39 |
 <!-- AIFG_META_END -->
 
-*自动更新 · 最后更新: 2026-05-26T13:49:58.345651Z*
+*自动更新 · 最后更新: 2026-05-26T13:53:58.414609Z*
 
 ---
 
@@ -74,16 +74,16 @@ AI-FG 目标：提供可复用的 FAQ、检查清单、提示词模板和工作�
 <!-- AIFG_POSTS_START -->
 | Date | Title | Category | Tags | Risk | Status |
 |---|---|---|---|---|---|
-| 2026-05-31 | [AI 生成内容交付前检查清单](./content/checklists/ai-output-quality-checklist.md) | AI品控检查 | 检查清单, 交付质量, 人工复核 | 中 | published |
-| 2026-05-31 | [AI 敏感信息红线清单](./content/checklists/ai-privacy-risk-checklist.md) | 安全与不背锅 | 隐私, 安全, 红线 | 高 | published |
-| 2026-05-31 | [术语：AI交付](./content/glossary/ai-delivery.md) | 职场交付 | 术语, AI交付 | 中 | published |
-| 2026-05-31 | [术语：AI幻觉](./content/glossary/ai-hallucination.md) | AI基础避坑 | 术语, AI幻觉 | 中 | published |
-| 2026-05-31 | [术语：人工复核](./content/glossary/human-review.md) | AI品控检查 | 术语, 人工复核 | 中 | published |
-| 2026-05-31 | [AI 幻觉识别指南](./content/guides/ai-hallucination-check.md) | AI品控检查 | AI幻觉, 事实核验, 风险控制 | 高 | published |
-| 2026-05-31 | [AI-FG 方法论](./content/methodology/ai-fg.md) | AI工作流 | 方法论, 交付, 品控 | 中 | published |
-| 2026-05-31 | [AI-FG Prompt 模板库](./content/prompts/index.md) | AI工作流 | Prompt, 模板, 复用 | 中 | published |
 | 2026-05-30 | [为什么不建议直接复制AI答案？](./content/2026/05/2026-05-30-007-no-copy.md) | AI品控检查 | AI使用, 交付质量, 职场习惯 | 高 | published |
 | 2026-05-29 | [AI到底适合做初稿还是终稿？](./content/2026/05/2026-05-29-006-draft-vs-final.md) | 职场交付 | AI工作流, 效率, 产出质量 | 中 | published |
+| 2026-05-28 | [哪些事情不能直接交给AI？](./content/2026/05/2026-05-28-005-dont-ai.md) | 安全与不背锅 | AI安全, 数据隐私, 职场红线 | 高 | published |
+| 2026-05-27 | [为什么AI回答越流畅越容易让人误判？](./content/2026/05/2026-05-27-004-fluent-scam.md) | 安全与不背锅 | AI风险, 批判思维, 信息验证 | 高 | published |
+| 2026-05-26 | [AI写的东西为什么总是很空？](./content/2026/05/2026-05-26-003-vague.md) | AI品控检查 | AI指令, 提示词, 内容质量 | 中 | published |
+| 2026-05-26 | [把Excel直接丢给AI分析，我踩过的坑](./content/2026/05/2026-05-26-008-excel-give-to-ai-analysis.md) | AI办公自动化 | Excel, AI分析, 数据处理 | 中 | published |
+| 2026-05-26 | [AI 生成内容交付前检查清单](./content/checklists/ai-output-quality-checklist.md) | AI品控检查 | 检查清单, 交付质量, 人工复核 | 中 | published |
+| 2026-05-26 | [AI 敏感信息红线清单](./content/checklists/ai-privacy-risk-checklist.md) | 安全与不背锅 | 隐私, 安全, 红线 | 高 | published |
+| 2026-05-26 | [术语：AI交付](./content/glossary/ai-delivery.md) | 职场交付 | 术语, AI交付 | 中 | published |
+| 2026-05-26 | [术语：AI幻觉](./content/glossary/ai-hallucination.md) | AI基础避坑 | 术语, AI幻觉 | 中 | published |
 <!-- AIFG_POSTS_END -->
 
 ---
