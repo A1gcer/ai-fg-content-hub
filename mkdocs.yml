@@ -22,9 +22,10 @@ markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
 
+extra_css:
+  - css/prompts.css
 extra_javascript:
   - js/copy-button.js
-  - css/prompts.css
 
 plugins:
   - search:

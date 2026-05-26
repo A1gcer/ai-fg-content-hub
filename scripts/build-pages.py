@@ -286,9 +286,7 @@ def build_prompts(posts):
   </div>
 </div>""")
 
-    html = f"""<link rel="stylesheet" href="../css/prompts.css">
-
-# 📋 AI不翻车 Prompt 库
+    html = f"""# 📋 AI不翻车 Prompt 库
 
 > 每个 Prompt 都经过实测验证，复制即用。
 
