@@ -252,6 +252,33 @@ def build_awesome(posts):
     lines.append(gen_jsonld_collection("Awesome AI不翻车", "精选推荐的高质量AI使用内容", "awesome-ai-fg"))
     write(DOCS_DIR / "awesome-ai-fg.md", "\n".join(lines))
 
+
+def build_prompts(posts):
+    lines = [
+        "# 📋 AI不翻车 Prompt 库", "",
+        "> 每个 Prompt 都经过实测验证，复制即用。", "",
+        "---", "",
+    ]
+    for p in posts:
+        prompt = p.get("prompt", "")
+        if not prompt:
+            continue
+        usage = p.get("usage_count", 0)
+        lines += [
+            f"## ❓ {p['title']}", "",
+            f"**场景：** {p.get('category', '通用')}",
+            f"**风险等级：** {p.get('risk', '中')}",
+        ]
+        if usage:
+            lines.append(f"**使用次数：** {usage}")
+        lines += ["", "```text", prompt, "```", "",
+                  f"[👉 查看完整解答]({post_link(p,0)})", "",
+                  "---", "",
+        ]
+    write(DOCS_DIR / "prompts" / "index.md", "\n".join(lines))
+    print(f"build-prompts: {len([x for x in posts if x.get('prompt')])} prompts")
+
+
 if __name__ == "__main__":
     index = load_json("index.json")
     if not index:
@@ -265,4 +292,5 @@ if __name__ == "__main__":
     build_risk(published)
     build_content_pages(items)
     build_awesome(published)
+    build_prompts(published)
     print("build-pages complete")

@@ -46,6 +46,14 @@ def make_url_path(meta: dict, rel: Path):
         return f"posts/{yyyy}/{mm}/{slug}/"
     return f"{section}/{slug}/"
 
+def extract_prompt(body: str) -> str:
+    """从 body 中提取 ## 可复制 Prompt 区块的内容"""
+    m = re.search(r"##\s*可复制\s*Prompt\s*\n+```(?:text)?\s*\n?(.*?)\n?```", body, re.DOTALL)
+    if m:
+        return m.group(1).strip()
+    return ""
+
+
 def scan():
     posts = []
     for f in sorted(CONTENT_DIR.rglob("*.md")):
@@ -79,6 +87,7 @@ def scan():
             "section": section,
             "url_path": make_url_path(meta, rel),
             "word_count": len(re.findall(r"\S+", body)),
+            "prompt": extract_prompt(body),
             "body": body,
         }
         posts.append(item)

@@ -22,12 +22,16 @@ markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
 
+extra_javascript:
+  - js/copy-button.js
+
 plugins:
   - search:
       lang: zh
 
 nav:
   - 首页: index.md
+  - 📋 Prompt库: prompts/index.md
   - 分类: categories/index.md
   - 标签: tags/index.md
   - 时间线: timeline/index.md
