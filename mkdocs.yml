@@ -33,7 +33,7 @@ plugins:
 
 nav:
   - 首页: index.md
-  - 📋 Prompt库: prompts/index.md
+  - 📋 Skill库: prompts/index.md
   - 分类: categories/index.md
   - 标签: tags/index.md
   - 时间线: timeline/index.md
