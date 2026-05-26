@@ -2,6 +2,7 @@
 """build-pages.py — 从 data/index.json 生成 docs/ 页面"""
 
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -253,42 +254,68 @@ def build_awesome(posts):
     write(DOCS_DIR / "awesome-ai-fg.md", "\n".join(lines))
 
 
+def esc(s):
+    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;") if s else ""
+
 def build_prompts(posts):
-    """生成卡片式 Prompt 库页面"""
+    """生成卡片式 Skill 库页面（Skill > Prompt，兼容旧 Prompt 数据）"""
     risk_icon = {"高": "🔴", "中": "🟡", "低": "🟢"}
     risk_tag = {"高": "tag-risk-high", "中": "tag-risk-mid", "低": "tag-risk-low"}
     cards = []
     for p in posts:
-        prompt = p.get("prompt", "")
+        skill = p.get("skill", {})
+        prompt = skill.get("instruction", "") or p.get("prompt", "")
         if not prompt:
             continue
-        risk_html = risk_icon.get(p["risk"], "⚪")
-        tag_html = risk_tag.get(p["risk"], "")
-        escaped = (prompt
-            .replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-        )
+        skill_name = skill.get("name", "")
+        skill_scenario = skill.get("scenario", "")
+        skill_constraints = skill.get("constraints", "")
+        skill_checks = skill.get("checks", "")
+        risk = skill.get("risk", p.get("risk", "中"))
+        # Clean emoji prefix from risk if present
+        risk_clean = re.sub(r"[🔴🟡🟢⚪]", "", risk).strip() or risk
+        risk_html = risk_icon.get(risk_clean, "⚪")
+        tag_html = risk_tag.get(risk_clean, "")
+        escaped_prompt = esc(prompt)
+        escaped_constraints = esc(skill_constraints)
+        escaped_checks = esc(skill_checks)
+
         cards.append(f"""
 <div class="prompt-card">
   <div class="prompt-card-header">
-    <h3>❓ {p['title']}</h3>
+    <h3>\U0001f9e0 {skill_name if skill_name else p['title']}</h3>
     <div class="prompt-card-meta">
-      <span>📂 {p.get('category', '通用')}</span>
-      <span><span class="tag {tag_html}">{risk_html} {p['risk']}</span></span>
+      <span>\U0001f4c2 {p.get('category', '通用')}</span>
+      <span><span class="tag {tag_html}">{risk_html} {risk_clean}</span></span>
     </div>
   </div>
   <div class="prompt-card-body">
-    <pre><code>{escaped}</code></pre>
+    <div class="skill-scenario">\U0001f3af 场景：{esc(skill_scenario)}</div>
+    <details>
+      <summary>\U0001f4dd 指令（点击展开）</summary>
+      <pre><code>{escaped_prompt}</code></pre>
+    </details>""" + (
+        f"""
+    <details>
+      <summary>\U0001f6ae 约束</summary>
+      <pre>{escaped_constraints}</pre>
+    </details>""" if escaped_constraints else ""
+    ) + (
+        f"""
+    <details>
+      <summary>✅ 输出检查</summary>
+      <pre>{escaped_checks}</pre>
+    </details>""" if escaped_checks else ""
+    ) + f"""
   </div>
   <div class="prompt-card-footer">
-    <a href="{post_link(p,1)}">👉 查看完整解答</a>
+    <a href="{post_link(p,1)}">\U0001f449 查看完整解答</a>
   </div>
 </div>""")
 
-    html = f"""# 📋 AI不翻车 Prompt 库
+    html = f"""# \U0001f4cb AI不翻车 Skill 库
 
-> 每个 Prompt 都经过实测验证，复制即用。
+> 每个 Skill 都是一个可复用的 AI 解决方案，包含场景、指令、约束和检查清单。
 
 <div class="prompt-grid">
 {"".join(cards)}
@@ -296,10 +323,10 @@ def build_prompts(posts):
 
 ---
 
-*共 {len(cards)} 个 Prompt · 更新于 {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}*
+*共 {len(cards)} 个 Skill · 更新于 {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}*
 """
     write(DOCS_DIR / "prompts" / "index.md", html)
-    print(f"build-prompts: {len(cards)} prompts")
+    print(f"build-prompts: {len(cards)} skills")
 
 
 if __name__ == "__main__":

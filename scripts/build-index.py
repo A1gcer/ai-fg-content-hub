@@ -53,6 +53,37 @@ def extract_prompt(body: str) -> str:
         return m.group(1).strip()
     return ""
 
+def extract_skill(body: str) -> dict:
+    """从 body 中提取 ## 可复制 Skill 的结构化字段"""
+    result = {"name": "", "scenario": "", "risk": "", "instruction": "", "constraints": "", "checks": ""}
+    m = re.search(r"##\s*可复制\s*Skill\s*\n", body)
+    if not m:
+        return result
+    section_start = m.end()
+    next_heading = re.search(r"\n##\s", body[section_start:])
+    section = body[section_start:section_start + next_heading.start()] if next_heading else body[section_start:]
+
+    name_m = re.search(r"\*\*Skill[：:]*\*\*\s*(.+?)(?:\n|$)", section)
+    scenario_m = re.search(r"\*\*场景[：:]*\*\*\s*(.+?)(?:\n|$)", section)
+    risk_m = re.search(r"\*\*风险等级[：:]*\*\*\s*(.+?)(?:\n|$)", section)
+    inst_m = re.search(r"\*\*指令[：:]*\*\*\s*\n+```(?:text)?\s*\n?(.*?)\n?```", section, re.DOTALL)
+    constraints_m = re.search(r"\*\*约束[：:]*\*\*\s*\n(.+?)(?:\n\*\*|\n##|\Z)", section, re.DOTALL)
+    checks_m = re.search(r"\*\*输出检查[：:]*\*\*\s*\n(.+?)(?:\n##|\Z)", section, re.DOTALL)
+
+    if name_m:
+        result["name"] = name_m.group(1).strip()
+    if scenario_m:
+        result["scenario"] = scenario_m.group(1).strip()
+    if risk_m:
+        result["risk"] = risk_m.group(1).strip()
+    if inst_m:
+        result["instruction"] = inst_m.group(1).strip()
+    if constraints_m:
+        result["constraints"] = constraints_m.group(1).strip()
+    if checks_m:
+        result["checks"] = checks_m.group(1).strip()
+    return result
+
 
 def scan():
     posts = []
@@ -88,6 +119,7 @@ def scan():
             "url_path": make_url_path(meta, rel),
             "word_count": len(re.findall(r"\S+", body)),
             "prompt": extract_prompt(body),
+            "skill": extract_skill(body),
             "body": body,
         }
         posts.append(item)

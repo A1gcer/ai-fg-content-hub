@@ -6,8 +6,47 @@
 .md-typeset .prompt-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-  gap: 20px;
+  gap: 24px;
   margin: 1.5em 0;
+}
+
+/* Skill 场景行 */
+.md-typeset .skill-scenario {
+  font-size: 0.88em;
+  color: var(--md-default-fg-color--light);
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  background: var(--md-code-bg-color);
+  border-radius: 6px;
+  line-height: 1.4;
+}
+
+/* Skill 卡片内的 details/summary */
+.md-typeset .prompt-card details {
+  margin: 6px 0;
+  font-size: 0.85em;
+}
+
+.md-typeset .prompt-card details summary {
+  cursor: pointer;
+  color: var(--md-typeset-a-color);
+  font-weight: 500;
+  padding: 4px 0;
+}
+
+.md-typeset .prompt-card details summary:hover {
+  opacity: 0.8;
+}
+
+.md-typeset .prompt-card details pre {
+  margin: 4px 0;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 0.85em;
+  background: #1e1e2e;
+  color: #cdd6f4;
+  white-space: pre-wrap;
+}
 }
 
 /* 每个提示卡片 */
