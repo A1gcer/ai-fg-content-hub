@@ -1,0 +1,104 @@
+/**
+ * prompts.css — AI不翻车 Prompt 库专属样式
+ */
+
+/* 提示库卡片容器 */
+.md-typeset .prompt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 20px;
+  margin: 1.5em 0;
+}
+
+/* 每个提示卡片 */
+.md-typeset .prompt-card {
+  border: 1px solid var(--md-default-fg-color--lighter);
+  border-radius: 8px;
+  padding: 0;
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+  background: var(--md-default-bg-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.md-typeset .prompt-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+/* 卡片头部 */
+.prompt-card-header {
+  padding: 16px 20px 8px;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.prompt-card-header h3 {
+  margin: 0 0 4px;
+  font-size: 1.1em;
+  color: var(--md-typeset-color);
+}
+
+.prompt-card-meta {
+  font-size: 0.82em;
+  color: var(--md-default-fg-color--light);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.prompt-card-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.prompt-card-meta .tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 0.75em;
+  font-weight: 500;
+}
+
+.tag-risk-low { background: #e8f5e9; color: #2e7d32; }
+.tag-risk-mid { background: #fff3e0; color: #e65100; }
+.tag-risk-high { background: #ffebee; color: #c62828; }
+
+/* Prompt 代码区 */
+.prompt-card-body {
+  padding: 12px 20px;
+  flex: 1;
+}
+
+.prompt-card-body pre {
+  margin: 0;
+  border-radius: 6px;
+  background: #1e1e2e;
+}
+
+.prompt-card-body code {
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+
+/* 卡片底部 */
+.prompt-card-footer {
+  padding: 8px 20px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.prompt-card-footer a {
+  font-size: 0.85em;
+}
+
+/* 复制按钮 - 在 prompt 卡片内始终可见 */
+.prompt-card .copy-button {
+  opacity: 1 !important;
+  top: 8px !important;
+  right: 8px !important;
+  background: rgba(30, 30, 46, 0.8) !important;
+}

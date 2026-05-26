@@ -254,29 +254,54 @@ def build_awesome(posts):
 
 
 def build_prompts(posts):
-    lines = [
-        "# 📋 AI不翻车 Prompt 库", "",
-        "> 每个 Prompt 都经过实测验证，复制即用。", "",
-        "---", "",
-    ]
+    """生成卡片式 Prompt 库页面"""
+    risk_icon = {"高": "🔴", "中": "🟡", "低": "🟢"}
+    risk_tag = {"高": "tag-risk-high", "中": "tag-risk-mid", "低": "tag-risk-low"}
+    cards = []
     for p in posts:
         prompt = p.get("prompt", "")
         if not prompt:
             continue
-        usage = p.get("usage_count", 0)
-        lines += [
-            f"## ❓ {p['title']}", "",
-            f"**场景：** {p.get('category', '通用')}",
-            f"**风险等级：** {p.get('risk', '中')}",
-        ]
-        if usage:
-            lines.append(f"**使用次数：** {usage}")
-        lines += ["", "```text", prompt, "```", "",
-                  f"[👉 查看完整解答]({post_link(p,0)})", "",
-                  "---", "",
-        ]
-    write(DOCS_DIR / "prompts" / "index.md", "\n".join(lines))
-    print(f"build-prompts: {len([x for x in posts if x.get('prompt')])} prompts")
+        risk_html = risk_icon.get(p["risk"], "⚪")
+        tag_html = risk_tag.get(p["risk"], "")
+        escaped = (prompt
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+        )
+        cards.append(f"""
+<div class="prompt-card">
+  <div class="prompt-card-header">
+    <h3>❓ {p['title']}</h3>
+    <div class="prompt-card-meta">
+      <span>📂 {p.get('category', '通用')}</span>
+      <span><span class="tag {tag_html}">{risk_html} {p['risk']}</span></span>
+    </div>
+  </div>
+  <div class="prompt-card-body">
+    <pre><code>{escaped}</code></pre>
+  </div>
+  <div class="prompt-card-footer">
+    <a href="{post_link(p,1)}">👉 查看完整解答</a>
+  </div>
+</div>""")
+
+    html = f"""<link rel="stylesheet" href="../css/prompts.css">
+
+# 📋 AI不翻车 Prompt 库
+
+> 每个 Prompt 都经过实测验证，复制即用。
+
+<div class="prompt-grid">
+{"".join(cards)}
+</div>
+
+---
+
+*共 {len(cards)} 个 Prompt · 更新于 {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}*
+"""
+    write(DOCS_DIR / "prompts" / "index.md", html)
+    print(f"build-prompts: {len(cards)} prompts")
 
 
 if __name__ == "__main__":
