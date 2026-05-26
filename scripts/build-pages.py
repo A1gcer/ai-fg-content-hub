@@ -4,6 +4,7 @@
 import json
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
@@ -53,6 +54,8 @@ def build_home(posts, meta):
         "- [风险](risk/)", "",
         f"*更新于 {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}*",
     ]
+    lines.append("")
+    lines.append(gen_jsonld_home(meta))
     write(DOCS_DIR / "index.md", "\n".join(lines))
 
 def build_categories(posts):
@@ -65,6 +68,7 @@ def build_categories(posts):
         for p in sort_by_date_desc(cats[c]):
             lines.append(f"- [{p['title']}]({post_link(p,1)}) · {p['date']}")
         lines.append("")
+    lines.append(gen_jsonld_collection("分类浏览", f"共{len(cats)}个分类，{len(published)}篇文章", "categories/"))
     write(DOCS_DIR / "categories" / "index.md", "\n".join(lines))
 
 def build_tags(posts):
@@ -78,6 +82,7 @@ def build_tags(posts):
         for p in sort_by_date_desc(tags[t]):
             lines.append(f"- [{p['title']}]({post_link(p,1)})")
         lines.append("")
+    lines.append(gen_jsonld_collection("标签浏览", f"共{len(tags)}个标签", "tags/"))
     write(DOCS_DIR / "tags" / "index.md", "\n".join(lines))
 
 def build_timeline(posts):
@@ -91,6 +96,7 @@ def build_timeline(posts):
         for p in sort_by_date_desc(m[month]):
             lines.append(f"- [{p['title']}]({post_link(p,1)})")
         lines.append("")
+    lines.append(gen_jsonld_collection("时间线", f"共{len(m)}个月，{len(published)}篇文章", "timeline/"))
     write(DOCS_DIR / "timeline" / "index.md", "\n".join(lines))
 
 def build_risk(posts):
@@ -107,27 +113,114 @@ def build_risk(posts):
         for p in sort_by_date_desc(arr):
             lines.append(f"- [{p['title']}]({post_link(p,1)})")
         lines.append("")
+    lines.append(gen_jsonld_collection("按风险浏览", f"高{len(r.get('高',[]))}篇 / 中{len(r.get('中',[]))}篇 / 低{len(r.get('低',[]))}篇", "risk/"))
     write(DOCS_DIR / "risk" / "index.md", "\n".join(lines))
 
-def render_post_page(p):
-    import json as _json
-    jsonld = ""
+def gen_jsonld_collection(title: str, description: str, url_path: str) -> str:
+    site_url = "https://a1gcer.github.io/ai-fg-content-hub"
+    cp = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": title,
+        "description": description,
+        "url": f"{site_url}/{url_path}",
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": "AI不翻车FAQ / AI-FG",
+            "url": site_url
+        }
+    }
+    return f"\n<script type=\"application/ld+json\">\n{json.dumps(cp, indent=2, ensure_ascii=False)}\n</script>"
+
+def gen_jsonld_article(p) -> str:
+    """生成 Article + (可选 FAQPage) 双层 JSON-LD"""
+    site_url = "https://a1gcer.github.io/ai-fg-content-hub"
+    page_url = f"{site_url}/{p['url_path']}"
+
+    # Base Article schema
+    article = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": p["title"],
+        "description": p.get("summary", p.get("answer", "")),
+        "datePublished": p.get("date", ""),
+        "dateModified": p.get("updated", p.get("date", "")),
+        "author": {
+            "@type": "Person",
+            "name": "A1gcer"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "A1gcer"
+        },
+        "about": {
+            "@type": "Thing",
+            "name": p.get("category", "AI交付")
+        },
+        "keywords": ", ".join(p.get("tags", [])),
+        "url": page_url,
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": page_url
+        }
+    }
+    graphs = [article]
+
+    # BreadcrumbList
+    section = p.get("section", p["url_path"].split("/")[0])
+    breadcrumb = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": site_url},
+            {"@type": "ListItem", "position": 2, "name": section, "item": f"{site_url}/{section}/"},
+            {"@type": "ListItem", "position": 3, "name": p["title"], "item": page_url},
+        ]
+    }
+    graphs.append(breadcrumb)
+
+    # FAQPage if question+answer exist
     if p.get("question") and p.get("answer"):
-        jsonld = f"""
+        faq = {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [{
+                "@type": "Question",
+                "name": p["question"],
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": p["answer"]
+                }
+            }]
+        }
+        graphs.append(faq)
+
+    # Render as @graph
+    return f"""
 <script type="application/ld+json">
-{{
-  "@context":"https://schema.org",
-  "@type":"FAQPage",
-  "mainEntity":[{{
-    "@type":"Question",
-    "name":{_json.dumps(p["question"], ensure_ascii=False)},
-    "acceptedAnswer":{{
-      "@type":"Answer",
-      "text":{_json.dumps(p["answer"], ensure_ascii=False)}
-    }}
-  }}]
-}}
+{json.dumps({"@context": "https://schema.org", "@graph": graphs}, indent=2, ensure_ascii=False)}
 </script>""".strip()
+
+
+def gen_jsonld_home(meta) -> str:
+    site_url = "https://a1gcer.github.io/ai-fg-content-hub"
+    ws = {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "AI不翻车FAQ / AI-FG",
+        "description": "面向职场人的 AI 交付安全与质量控制知识库",
+        "url": site_url,
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": {"@type": "EntryPoint", "urlTemplate": f"{site_url}/?s={{search_term_string}}"},
+            "query-input": "required name=search_term_string"
+        }
+    }
+    return f"<script type=\"application/ld+json\">\n{json.dumps(ws, indent=2, ensure_ascii=False)}\n</script>"
+
+
+def render_post_page(p):
+    jsonld = gen_jsonld_article(p)
     lines = [
         f"# {p['title']}", "",
         f"> 分类：{p['category']} ｜ 风险：{p['risk']} ｜ 日期：{p['date']}", "",
@@ -138,8 +231,7 @@ def render_post_page(p):
         "- 关键事实必须人工核查",
         "- 涉及敏感信息请勿上传公共 AI 工具", "",
     ]
-    if jsonld:
-        lines.append(jsonld)
+    lines.append(jsonld)
     return "\n".join(lines)
 
 def build_content_pages(items):
@@ -157,6 +249,7 @@ def build_awesome(posts):
     lines += ["", "## 检查清单", "",
               "- [AI 生成内容交付前检查清单](checklists/ai-output-quality-checklist/)",
               "- [AI 敏感信息红线清单](checklists/ai-privacy-risk-checklist/)"]
+    lines.append(gen_jsonld_collection("Awesome AI不翻车", "精选推荐的高质量AI使用内容", "awesome-ai-fg"))
     write(DOCS_DIR / "awesome-ai-fg.md", "\n".join(lines))
 
 if __name__ == "__main__":
