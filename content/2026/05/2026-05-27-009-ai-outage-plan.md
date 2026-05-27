@@ -27,13 +27,11 @@ sync:
   wechat: published
   juejin: published
   xiaohongshu: published
-  csdn: draft
 urls:
   zhihu: https://zhuanlan.zhihu.com/p/2042882564407522386
   wechat: https://mp.weixin.qq.com/s/ui9qb654OqmgillsE-aTew
   juejin: https://juejin.cn/post/7644153319699005491
   xiaohongshu: http://xhslink.com/o/4fCfBuJaXcy
-  csdn: ''
 distribution_date: ''
 ---
 
