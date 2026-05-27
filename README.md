@@ -43,15 +43,15 @@ AI-FG 目标：提供可复用的 FAQ、检查清单、提示词模板和工作�
 <!-- AIFG_META_START -->
 | 指标 | 数值 |
 |---|---|
-| 📝 总文章 | 16 |
-| ✅ 已发布 | 16 |
+| 📝 总文章 | 17 |
+| ✅ 已发布 | 17 |
 | 📄 草稿 | 0 |
 | 🗂 归档 | 0 |
 | 📂 分类 | 6 |
-| 🏷 标签 | 39 |
+| 🏷 标签 | 44 |
 <!-- AIFG_META_END -->
 
-*自动更新 · 最后更新: 2026-05-26T14:25:56.058494Z*
+*自动更新 · 最后更新: 2026-05-27T00:48:19.707145Z*
 
 ---
 
@@ -78,12 +78,12 @@ AI-FG 目标：提供可复用的 FAQ、检查清单、提示词模板和工作�
 | 2026-05-29 | [AI到底适合做初稿还是终稿？](./content/2026/05/2026-05-29-006-draft-vs-final.md) | 职场交付 | AI工作流, 效率, 产出质量 | 中 | published |
 | 2026-05-28 | [哪些事情不能直接交给AI？](./content/2026/05/2026-05-28-005-dont-ai.md) | 安全与不背锅 | AI安全, 数据隐私, 职场红线 | 高 | published |
 | 2026-05-27 | [为什么AI回答越流畅越容易让人误判？](./content/2026/05/2026-05-27-004-fluent-scam.md) | 安全与不背锅 | AI风险, 批判思维, 信息验证 | 高 | published |
+| 2026-05-27 | [AI 突然挂了怎么办？一个真实的应急预案](./content/2026/05/2026-05-27-009-ai-outage-plan.md) | AI基础避坑 | 预案, 备份, AI故障 | 高 | published |
 | 2026-05-26 | [AI写的东西为什么总是很空？](./content/2026/05/2026-05-26-003-vague.md) | AI品控检查 | AI指令, 提示词, 内容质量 | 中 | published |
 | 2026-05-26 | [把Excel直接丢给AI分析，我踩过的坑](./content/2026/05/2026-05-26-008-excel-give-to-ai-analysis.md) | AI办公自动化 | Excel, AI分析, 数据处理 | 中 | published |
 | 2026-05-26 | [AI 生成内容交付前检查清单](./content/checklists/ai-output-quality-checklist.md) | AI品控检查 | 检查清单, 交付质量, 人工复核 | 中 | published |
 | 2026-05-26 | [AI 敏感信息红线清单](./content/checklists/ai-privacy-risk-checklist.md) | 安全与不背锅 | 隐私, 安全, 红线 | 高 | published |
 | 2026-05-26 | [术语：AI交付](./content/glossary/ai-delivery.md) | 职场交付 | 术语, AI交付 | 中 | published |
-| 2026-05-26 | [术语：AI幻觉](./content/glossary/ai-hallucination.md) | AI基础避坑 | 术语, AI幻觉 | 中 | published |
 <!-- AIFG_POSTS_END -->
 
 ---
